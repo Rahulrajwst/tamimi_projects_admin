@@ -1,0 +1,37 @@
+
+{% extends 'common_content.html' %}
+
+{% block common %}
+
+<body>
+<div class="parent hpadding">
+
+    <div>
+        <li>
+            <a href="{% url 'show_all_devices' %}">Show All Devices</a>
+        </li>
+        <li>
+            <a href="{% url 'show_all_sections' %}">Show All Sections</a>
+        </li>
+        <li>
+            <a href="{% url 'show_all_parent_sections' %}">Show All Parent Sections</a>
+        </li>
+    </div>
+    <div>
+        <label>Update with latest data</label>
+        <form method="post">
+        {% csrf_token %}
+        <td><button type="submit", width="100", value="ync", name="_sync"> Sync </button></td>
+        </form>
+    </div>
+    
+</div>
+
+
+
+</body>
+
+
+
+{% endblock common %}
+

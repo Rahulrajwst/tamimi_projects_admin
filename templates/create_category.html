@@ -1,0 +1,35 @@
+{% extends 'common_content.html' %}
+
+{% block common %}
+
+
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="card col-4 box">
+        <div style="margin-bottom: 20px;">
+            <label>Select Category: </label>
+            <select id="categoryselect" name="selected_option">
+                {% for item in alldata %}
+                <option value='{{item.catid}}'>{{item.categoryname}}</option>
+                {% endfor %}
+            </select>
+        </div> 
+        <div style="margin-bottom: 20px;">
+            <label>Upload Image for home: </label>
+            <input name="image-home" type="file">
+        </div>
+        <div style="margin-bottom: 20px;">
+            <label>Upload Image for section: </label>
+            <input name="image-section" type="file">
+        </div>
+        <div style="margin-bottom: 20px;">
+            <button type="submit">create</button>
+        </div>
+        
+    </div>
+    
+</form>
+
+{% endblock common %}

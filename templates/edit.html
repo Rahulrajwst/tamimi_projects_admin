@@ -1,0 +1,15 @@
+{% extends 'common_content.html' %}
+
+{% block common %}
+
+
+<div class="card col-4 box">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ frm.as_p }}
+         <button type="submit">Save</button>
+    </form>
+</div>
+
+
+{% endblock common %}

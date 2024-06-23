@@ -1,0 +1,121 @@
+{% load static %}
+<style>
+    img {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      object-fit: contain;
+    }
+    .row {
+      
+      display: flex;
+      
+      flex-wrap: wrap;
+      margin-right: -7.5px;
+      margin-left: -7.5px;
+    }
+
+    .col-12 {
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+    }
+    .card {
+    box-shadow: 0 0 1px rgba(0, 0, 0, .125), 0 1px 3px rgba(0, 0, 0, .2);
+    margin-bottom: 1rem;
+    }
+
+    .card {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 0 solid rgba(0, 0, 0, .125);
+    border-radius: .25rem;
+    }
+    .card-header {
+    background-color: transparent;
+    border-bottom: 1px solid rgba(0, 0, 0, .125);
+    padding: .75rem 1.25rem;
+    position: relative;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+    }
+
+    .card-header {
+    padding: .75rem 1.25rem;
+    margin-bottom: 0;
+    background-color: rgba(0, 0, 0, .03);
+    border-bottom: 0 solid rgba(0, 0, 0, .125);
+    }
+    .card-header>.card-tools {
+    float: right;
+    margin-right: -.625rem;
+    }
+    .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    }   
+    .card-body>.table {
+    margin-bottom: 0;
+    }
+    .text-nowrap {
+    white-space: nowrap !important;
+    }
+    .hcenter {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .vcenter {
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+    .container {
+      padding: 25px;
+      height: 200px;
+      position: relative;
+    }
+    
+    .parent {
+    display: flex;
+    justify-content: space-between;
+    }
+    .box {
+      padding: 25;
+    }
+    .vpadding{
+      padding-top: 25;
+      padding-bottom: 25;
+    }
+    .hpadding{
+      padding-left: 25;
+      padding-right: 25;
+    }
+    .create-container {
+      padding: 25px;
+      position: relative;
+      border: 3px solid gray;
+    }
+    table {
+    border-collapse: separate; 
+    border-left: 25px;
+    border-right: 25px;
+    }
+
+</style>
+<div class="box">
+  <img src="{% static 'images/icon.png' %} " width = "90" height = "90"/>
+  <h1>Tamimi Projects</h1>
+  <p>Admin portal for controlling category images</p>
+</div>
+
+{% block common %}
+<p>content</p>
+{% endblock common %}

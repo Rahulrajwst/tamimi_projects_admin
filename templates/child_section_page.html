@@ -1,0 +1,67 @@
+{% extends 'common_content.html' %}
+{% load static %}
+{% block common %}
+
+<div class="hpadding">
+    <div class="card hpadding">
+        <p>
+            <span>Select section: </span>
+            <span>
+                <form method=post enctype="multipart/form-data">
+                    <select id="categoryselect" name="_selected_option">
+                        {% for item in unselected_options %}
+                        <option value='{{item.id}}'>{{item.category.categoryname}}</option>
+                        {% endfor %}
+                    </select>
+                    {% csrf_token %}
+                    <button type="submit", width="100", name="_create"> Add </button>
+                </form>
+            </span>
+            
+        </p>
+    </div>
+</div>
+<div>
+    <div class="box">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{{parentname}}</h3>
+            </div>
+    
+            <div class="box">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Item No</th>
+                        <th>Category</th>
+                        <th>Image</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in selected_options %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{item.category.categoryname}}</td>
+                        <td><img src="{{ item.sectionimage.url }}", width="200", height="100", object-fit="contain"></img></td>
+                    
+                        <td>
+                            <form method=post class="vcenter">
+                                {% csrf_token %}
+                                <button type="submit", width="100", value="{{item.pk}}", name="_delete"> Delete </button>
+                            </form>
+                        </td>
+                        
+                    </tr>
+                    
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+    
+        </div>
+    
+    </div>
+</div>
+
+{% endblock common %}
