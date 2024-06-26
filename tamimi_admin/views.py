@@ -2,11 +2,10 @@ from django.shortcuts import render
 from . models import CategoryModel,DeviceModel,SectionModel,ParentSectionModel
 from gql import gql, Client
 from gql.transport.aiohttp import AIOHTTPTransport
-import ast
 from .serializer import DeviceSerializer,SectionSerializer,ParentSectionSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
+from .forms import ParentForm
 
 
 # Create your views here.
@@ -61,16 +60,15 @@ def home_view(request):
             else:
 
                 for i in result['collections']['nodes']:                   
-
-                    tmp_instance=CategoryModel.objects.get(catid=i['id'])
-                    if tmp_instance is None:
-                        category=CategoryModel(catid=i['id'],categoryname=i['title'],handle=i['handle'])
-                        category.save()
-                    else:
+                    try:
+                        tmp_instance=CategoryModel.objects.get(catid=i['id'])
                         tmp_instance.catid=i['id']
                         tmp_instance.categoryname=i['title']
                         tmp_instance.handle=i['handle']
                         tmp_instance.save()
+                    except CategoryModel.DoesNotExist: 
+                        category=CategoryModel(catid=i['id'],categoryname=i['title'],handle=i['handle'])
+                        category.save()
 
             updateddata=CategoryModel.objects.all()
             for modelitem in updateddata:
@@ -159,13 +157,13 @@ def all_sections_view(request):
 
 def all_parent_sections_view(request):
 
+
+    frm=ParentForm()
     if request.POST:
         if '_create' in request.POST:
-            name = request.POST.get('_parent_section') 
-            print(name)       
-            image = request.FILES.get('image')
-            section = ParentSectionModel(parentsectionname=name,parentsectionimage=image)
-            section.save()
+            frm=ParentForm(request.POST, request.FILES)
+            if frm.is_valid():
+                frm.save()
         elif '_delete' in request.POST:
             id = request.POST.get('_delete')
             tmp_instance=ParentSectionModel.objects.get(pk=id)
@@ -175,7 +173,8 @@ def all_parent_sections_view(request):
     
     parentsectionlist=ParentSectionModel.objects.all()
 
-    data={'parentsectionlist':parentsectionlist}
+    data={'parentsectionlist':parentsectionlist,'frm':frm}
+    
     
     return render(request,'parent_section_page.html',data)
 

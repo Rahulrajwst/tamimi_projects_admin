@@ -8,14 +8,9 @@
         <p>
             <span>
                 <form method=post enctype="multipart/form-data">
-                    <label>Parent section name: </label>
-                    <input type="text" name="_parent_section">
-                    <div style="margin-bottom: 20px; margin-top: 20px;">
-                        <label>Upload device image: </label>
-                        <input name="image" type="file">
-                    </div>
-                
+                    
                     {% csrf_token %}
+                    {{ frm.as_p }}
                     <button type="submit", width="100", name="_create"> Add </button>
                 </form>
             </span>

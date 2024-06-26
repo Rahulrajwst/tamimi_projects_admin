@@ -22,7 +22,7 @@ class DeviceModel(models.Model):
     
 class ParentSectionModel(models.Model):
     parentsectionname=models.CharField(max_length=250)
-    parentsectionimage=models.ImageField(upload_to='parentsectionimages/', null=True, blank=True)
+    parentsectionimage=models.ImageField(upload_to='parentsectionimages/')
     def __str__(self):
         return self.parentsectionname
     
