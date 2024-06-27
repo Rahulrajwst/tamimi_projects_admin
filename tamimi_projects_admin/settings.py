@@ -30,7 +30,7 @@ environ.Env.read_env()
 SECRET_KEY = 'django-insecure-nrt7r1nwc574j4mx$a_n@wc+=i22qp!84kvj%hx_qm9e9w&f@v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -154,5 +154,6 @@ if not DEBUG:
     # and renames the files with unique names for each version to support long-term caching
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 else:
-    MEDIA_URL='/media/'
-    MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+    # MEDIA_URL='/media/'
+    # MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
