@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tamimi_admin',
     'rest_framework',
-    'storages',
 ]
 
 MIDDLEWARE = [
