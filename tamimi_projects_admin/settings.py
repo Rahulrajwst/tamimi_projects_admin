@@ -26,10 +26,10 @@ environ.Env.read_env()
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-nrt7r1nwc574j4mx$a_n@wc+=i22qp!84kvj%hx_qm9e9w&f@v'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tamimi_admin',
     'rest_framework',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -82,25 +83,25 @@ WSGI_APPLICATION = 'tamimi_projects_admin.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-'''
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'category_db',
-        'HOST': 'localhost',
+        'NAME': 'tamimi_db',
+        'HOST': 'database-1.c702wq4umz9e.us-east-2.rds.amazonaws.com',
         'PORT': '5432',
-        'USER': 'postgres',
-        'PASSWORD': 'rpp@may24'
+        'USER': 'tamimi',
+        'PASSWORD': os.environ.get('PASSWORD')
     }
 }
+
+
+
 '''
-
-
-
 DATABASES = {
     'default' : dj_database_url.parse(env('DATABASE_URL'))
 }
-
+'''
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -167,35 +168,21 @@ MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 
 
 
-AWS_ACCESS_KEY_ID = 'AKIA6GBME5GQVFSSWK5S'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = 'bucket-tamimi'
 
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
 AWS_S3_FILE_OVERWRITE = False
 
-AWS_S3_SIGNATURE_NAME = 's3v4',
-
-
-
-AWS_DEFAULT_ACL = None
-
-AWS_S3_VERITY = True
-
-
-
-
-
 STORAGES = {
-    "default": {
-        "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
+        "default": {
+            "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
+        }
     }
-}
-# Media file (image) management
-
 
 
