@@ -1,14 +1,18 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from . models import CategoryModel,DeviceModel,SectionModel,ParentSectionModel
 from gql import gql, Client
 from gql.transport.aiohttp import AIOHTTPTransport
 from .serializer import DeviceSerializer,SectionSerializer,ParentSectionSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .forms import ParentForm
+from .forms import ParentForm,CreateUserForm,LoginForm
+from django.http import HttpResponse
+from django.contrib.auth.models import auth
+from django.contrib.auth import authenticate, login
 
+from django.contrib.auth.decorators import login_required
 
-# Create your views here.
+# apis
 @api_view(['GET'])
 def getDeviceData(request):
     # devicelist = CategoryModel.objects.prefetch_related('base_category')
@@ -29,6 +33,10 @@ def getParentData(request):
     serializer = ParentSectionSerializer(sectionlist, many=True)
     return Response(serializer.data)
 
+
+
+# Views
+@login_required(login_url='login')
 def home_view(request):
     if '_sync' in request.POST:
             print('sync')
@@ -84,6 +92,7 @@ def home_view(request):
     
     return render(request,'home.html')
 
+@login_required(login_url='login')
 def all_devices_view(request):
 
     if request.POST:
@@ -119,6 +128,7 @@ def all_devices_view(request):
     
     return render(request,'device_page.html',data)
 
+@login_required(login_url='login')
 def all_sections_view(request):
 
     if request.POST:
@@ -155,6 +165,7 @@ def all_sections_view(request):
     
     return render(request,'section_page.html',data)
 
+@login_required(login_url='login')
 def all_parent_sections_view(request):
 
 
@@ -179,7 +190,7 @@ def all_parent_sections_view(request):
     return render(request,'parent_section_page.html',data)
 
 
-    
+@login_required(login_url='login')
 def child_section_view(request,pk):
     
     parent=ParentSectionModel.objects.get(pk=pk)
@@ -211,3 +222,44 @@ def child_section_view(request,pk):
     data={'parentname':parent.parentsectionname,'unselected_options':unselected_options,'selected_options':selected_options}
 
     return render(request,'child_section_page.html',data)
+
+
+def register(request):
+    form = CreateUserForm()
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return HttpResponse("The user was registered!")
+        
+    context = {'form':form}
+
+    return render(request, 'register_page.html', context)
+
+def login(request):
+    form = LoginForm()
+    if request.method == 'POST':
+        form = LoginForm(request, data=request.POST)
+
+        if form.is_valid():
+            username = request.POST.get ('username')
+            password = request.POST. get ('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                auth.login(request, user)
+                return redirect('home_page')
+
+
+            form.save()
+            return HttpResponse("")
+        
+    context = {'form':form}
+
+    return render(request, 'login_page.html', context)
+
+def logout(request):
+    
+    auth.logout(request)
+
+    return redirect("login")

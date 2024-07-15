@@ -82,7 +82,6 @@ WSGI_APPLICATION = 'tamimi_projects_admin.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -95,12 +94,6 @@ DATABASES = {
 }
 
 
-
-'''
-DATABASES = {
-    'default' : dj_database_url.parse(env('DATABASE_URL'))
-}
-'''
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -151,20 +144,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL='media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
-
-# if not DEBUG:
-    # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
-    # STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
-    # and renames the files with unique names for each version to support long-term caching
-    # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-    # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-    # - AWS programmatic access
-
-
-
-
 
 
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')

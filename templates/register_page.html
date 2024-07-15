@@ -1,0 +1,21 @@
+{% extends 'common_content.html' %}
+
+{% block common %}
+
+
+<div class="card col-4 box">
+    <div class="card-header">
+        <h3 class="card-title">Create User</h3>
+    </div>
+    <div class="box">
+        <form method="POST" autocomplete="off">
+            {% csrf_token %}
+            {{ form.as_p }}
+             <input type="submit" value="Submit"/>
+        </form>
+    </div>
+    
+</div>
+
+
+{% endblock common %}

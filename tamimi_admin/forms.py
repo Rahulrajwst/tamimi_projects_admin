@@ -2,6 +2,10 @@
 
 from .models import ParentSectionModel
 from django import forms
+from django. contrib.auth.forms import UserCreationForm
+from django. contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm
+from django.forms.widgets import PasswordInput, TextInput
  
 # define the class of a form
 class ParentForm(forms.ModelForm):
@@ -24,3 +28,13 @@ class ParentForm(forms.ModelForm):
              
             raise forms.ValidationError("This field cannot be empty.")
         return parentsectionname
+    
+class CreateUserForm(UserCreationForm):
+    
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(widget=TextInput())
+    password = forms.CharField(widget=PasswordInput())
