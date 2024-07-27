@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import DeviceModel,CategoryModel,SectionModel,ParentSectionModel
+from .models import DeviceModel,CategoryModel,SectionModel,ParentSectionModel,DeviceOrderModel,SectionOrderModel
 
 class CategorySerializer(serializers.ModelSerializer):
     
@@ -12,6 +12,12 @@ class DeviceSerializer(serializers.ModelSerializer):
     class Meta:
         model=DeviceModel
         fields='__all__'
+
+class DeviceOrderSerializer(serializers.ModelSerializer):
+    device = DeviceSerializer()
+    class Meta:
+        model=DeviceOrderModel
+        fields='__all__'   
 
 
 
@@ -29,6 +35,12 @@ class SectionSerializer(serializers.ModelSerializer):
         model=SectionModel
         fields='__all__'
 
+class SectionOrderSerializer(serializers.ModelSerializer):
+    normalsection = SectionSerializer()
+    parentsection = ParentSectionSerializer()
+    class Meta:
+        model=SectionOrderModel
+        fields='__all__' 
 
     
     # class Meta:

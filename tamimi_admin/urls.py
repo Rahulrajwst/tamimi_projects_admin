@@ -9,6 +9,12 @@ urlpatterns = [
     path('', views.home_view, name='home_page'),
 
     # Device List and create
+    path('devicesorder/', views.device_order_view, name='devices_order'),
+
+    # Section List and create
+    path('sectionsorder/', views.section_order_view, name='sections_order'),
+
+    # Device List and create
     path('devices/', views.all_devices_view, name='show_all_devices'),
 
     # Section List and create
@@ -29,6 +35,8 @@ urlpatterns = [
     path('mdevice/', views.getDeviceData),
     path('msection/', views.getSectionData),
     path('mparent/', views.getParentData),
+    path('mdorder/', views.getDeviceOrderData),
+    path('msorder/', views.getSectionOrderData),
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

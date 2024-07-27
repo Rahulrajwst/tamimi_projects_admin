@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from . models import CategoryModel,DeviceModel,SectionModel,ParentSectionModel
+from . models import CategoryModel,DeviceModel,SectionModel,ParentSectionModel,DeviceOrderModel,SectionOrderModel
 from gql import gql, Client
 from gql.transport.aiohttp import AIOHTTPTransport
-from .serializer import DeviceSerializer,SectionSerializer,ParentSectionSerializer
+from .serializer import DeviceSerializer,SectionSerializer,ParentSectionSerializer,DeviceOrderSerializer,SectionOrderSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .forms import ParentForm,CreateUserForm,LoginForm
@@ -33,6 +33,17 @@ def getParentData(request):
     serializer = ParentSectionSerializer(sectionlist, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def getDeviceOrderData(request):
+    devicelist = DeviceOrderModel.objects.all().order_by('sortno')
+    serializer = DeviceOrderSerializer(devicelist, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getSectionOrderData(request):
+    sectionlist = SectionOrderModel.objects.all().order_by('sortno')
+    serializer = SectionOrderSerializer(sectionlist, many=True)
+    return Response(serializer.data)
 
 
 # Views
@@ -139,7 +150,11 @@ def all_sections_view(request):
             formdata = CategoryModel.objects.get(catid=catid)
             image = request.FILES.get('image')
             section = SectionModel(category=formdata,sectionimage=image)
-            section.save()
+            
+            try:
+                section.save()
+            except:
+                print("can not save")
         elif '_delete' in request.POST:
             id = request.POST.get('_delete')
             tmp_instance=SectionModel.objects.get(pk=id)
@@ -200,7 +215,10 @@ def child_section_view(request,pk):
             childid = request.POST.get('_selected_option') 
             child=SectionModel.objects.get(pk=childid)
             child.parentsection=parent
-            child.save()
+            try:
+                child.save()
+            except:
+                print("can not save")
         elif '_delete' in request.POST:
             childid = request.POST.get('_delete') 
             child=SectionModel.objects.get(pk=childid)
@@ -263,3 +281,224 @@ def logout(request):
     auth.logout(request)
 
     return redirect("login")
+
+
+@login_required(login_url='login')
+def device_order_view(request):
+
+    edit_flag=False
+    selected_order=None
+    if request.POST:
+        if '_create' in request.POST:
+            
+            device_id = request.POST.get('new_option') 
+            if device_id is None:
+                print(device_id)
+            else:
+                print('create')
+                device_order_count = DeviceOrderModel.objects.count()
+                print(device_order_count)
+                device_order_count=device_order_count+1
+                selected_device = DeviceModel.objects.get(pk=device_id)
+                new_device_order = DeviceOrderModel(sortno=device_order_count,device=selected_device)
+                new_device_order.save()
+            
+        elif '_delete' in request.POST:
+            edit_flag=False
+            selected_order=None
+            id = request.POST.get('_delete')
+            tmp_instance=DeviceOrderModel.objects.get(pk=id)
+            tmp_instance.delete()
+
+            device_order_list=DeviceOrderModel.objects.all().order_by('sortno')
+            counter=1
+            for item in device_order_list:
+                item.sortno=counter
+                item.save()
+                counter+=1
+            print('delete')
+        elif '_deleteall' in request.POST:
+            print('delete all')
+            DeviceOrderModel.objects.all().delete()
+        elif '_edit' in request.POST:
+            id=request.POST.get('_edit')
+            selected_order=DeviceOrderModel.objects.get(pk=id)
+            edit_flag=True
+
+        
+        elif '_save' in request.POST:
+            print('save start') 
+            order_id = request.POST.get('_save')   
+            selected_order = DeviceOrderModel.objects.get(pk=order_id)
+
+            sortno = request.POST.get('edit_option')
+            stored_order=DeviceOrderModel.objects.get(sortno=sortno)
+            
+
+            
+            stored_order.sortno=selected_order.sortno
+            selected_order.sortno=sortno
+
+
+            try:
+                selected_order.save()
+                stored_order.save()
+                
+            except:
+                print("can not save")
+            edit_flag=False
+            selected_order=None
+            print('save end')
+        elif '_cancel' in request.POST:
+            edit_flag=False
+            selected_order=None
+            print('cancel')
+    
+
+    devicelist=DeviceModel.objects.all()
+    device_order_list=DeviceOrderModel.objects.all().order_by('sortno')
+    
+    unselected_options=[]
+    for i in devicelist:
+        exist=False
+        for j in device_order_list:
+            if i==j.device:
+                exist=True
+                break
+        if exist==False:
+            unselected_options.append(i)
+        
+
+    # print(edit_flag)
+    # print(selected_order)
+    # print(devicelist)
+    # print('running after request=========')
+    data={'device_order_list':device_order_list,'unselected_options':unselected_options,'edit_flag':edit_flag, 'selected_order':selected_order}
+    
+    return render(request,'device_order_page.html',data)
+
+@login_required(login_url='login')
+def section_order_view(request):
+
+    edit_flag=False
+    selected_order=None
+    type_id='0'  # '0' stands for parent, '1' stands for section
+    if request.POST:
+        if '_create' in request.POST:
+            parentflag=False
+
+            section_order_count = SectionOrderModel.objects.count()
+            print('section_order_count',section_order_count)
+            section_order_count=section_order_count+1
+            type_id = request.POST.get('_type') 
+            print('type_id:',type_id)
+            if type_id=='0':
+                parentflag=True
+                parent_id = request.POST.get('parent_option')
+                try:
+                    
+                     
+                    parentsection=ParentSectionModel.objects.get(pk=parent_id)
+                    newsection=SectionOrderModel(sortno=section_order_count,parent=parentflag,parentsection=parentsection)
+                
+                    newsection.save()
+                except:
+                    print("can not save")
+            else:
+                child_id = request.POST.get('section_option') 
+                try:
+                    
+                    childsection=SectionModel.objects.get(pk=child_id)
+                    newsection=SectionOrderModel(sortno=section_order_count,parent=parentflag,normalsection=childsection)
+                
+                    newsection.save()
+                except:
+                    print("can not save")
+        elif '_type' in request.POST:
+            type_id = request.POST.get('_type') 
+            print('type_id:',type_id)
+
+            
+        elif '_delete' in request.POST:
+            edit_flag=False
+            selected_order=None
+            id = request.POST.get('_delete')
+            tmp_instance=SectionOrderModel.objects.get(pk=id)
+            tmp_instance.delete()
+
+            list=SectionOrderModel.objects.all().order_by('sortno')
+            counter=1
+            for item in list:
+                item.sortno=counter
+                item.save()
+                counter+=1
+            print('delete')
+
+        elif '_deleteall' in request.POST:
+            print('delete all')
+            SectionOrderModel.objects.all().delete()
+
+        elif '_edit' in request.POST:
+            id=request.POST.get('_edit')
+            selected_order=SectionOrderModel.objects.get(pk=id)
+            edit_flag=True
+
+        
+        elif '_save' in request.POST:
+            print('save start') 
+            order_id = request.POST.get('_save')   
+            selected_order = SectionOrderModel.objects.get(pk=order_id)
+
+            sortno = request.POST.get('edit_option')
+            stored_order=SectionOrderModel.objects.get(sortno=sortno)
+            
+            stored_order.sortno=selected_order.sortno
+            selected_order.sortno=sortno
+
+
+            try:
+                selected_order.save()
+                stored_order.save()
+            except:
+                print("can not save")
+            edit_flag=False
+            selected_order=None
+            print('save end')
+
+        elif '_cancel' in request.POST:
+            edit_flag=False
+            selected_order=None
+            print('cancel')
+    
+
+    sectionlist=SectionModel.objects.all()
+    parentlist=ParentSectionModel.objects.all()
+    section_order_list=SectionOrderModel.objects.all().order_by('sortno')
+    
+    unselected_sections=[]
+    unselected_parents=[]
+    
+
+    for parent in parentlist:
+        parent_exist=False
+        for order in section_order_list:
+            if parent==order.parentsection:
+                parent_exist=True
+                break
+        if parent_exist==False:
+            unselected_parents.append(parent)
+        
+    
+    for section in sectionlist:
+        section_exist=False
+        for order in section_order_list:
+            if section==order.normalsection:
+                section_exist=True
+                break
+        if section_exist==False:
+            unselected_sections.append(section)    
+
+        
+    data={'section_order_list':section_order_list,'unselected_parents':unselected_parents,'unselected_sections':unselected_sections,'edit_flag':edit_flag, 'selected_order':selected_order, 'type_id':type_id}
+    
+    return render(request,'section_order_page.html',data)

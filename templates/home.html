@@ -7,18 +7,41 @@
 <div class="parent hpadding">
 
     <div>
+    <div>
+        <h5>List of devices and sections on mobile</h5>
+    </div>
+    <div>
         <li>
-            <a href="{% url 'show_all_devices' %}">Show All Devices</a>
+            <a href="{% url 'devices_order' %}">Devices on order</a>
         </li>
         <li>
-            <a href="{% url 'show_all_sections' %}">Show All Sections</a>
+            <a href="{% url 'sections_order' %}">Parents and sections on order</a>
+        </li>
+    </div>
+    <p></p>
+    <div>
+        <h5>List data / Add new</h5>
+    </div>
+    <div>
+        <li>
+            <a href="{% url 'show_all_devices' %}">All Devices</a>
         </li>
         <li>
-            <a href="{% url 'show_all_parent_sections' %}">Show All Parent Sections</a>
+            <a href="{% url 'show_all_sections' %}">All Sections</a>
         </li>
+        <li>
+            <a href="{% url 'show_all_parent_sections' %}">All Parent Sections</a>
+        </li>
+    </div>
+    <p></p>
+    <div>
+        <h5>Account</h5>
+    </div>
+    <div>
         <li>
             <a href="{% url 'logout' %}"> Logout </a>
         </li>
+    </div>
     </div>
     <div>
         <label>Update with latest data</label>

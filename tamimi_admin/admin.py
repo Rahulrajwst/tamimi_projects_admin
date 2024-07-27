@@ -5,3 +5,4 @@ from . models import CategoryModel,DeviceModel,SectionModel,ParentSectionModel
 admin.site.register(DeviceModel)
 admin.site.register(SectionModel)
 admin.site.register(ParentSectionModel)
+admin.site.register(CategoryModel)

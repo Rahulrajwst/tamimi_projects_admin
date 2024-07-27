@@ -1,0 +1,120 @@
+
+{% extends 'common_content.html' %}
+{% load static %}
+{% block common %}
+
+
+
+<div>
+    <div class="box">
+        <div class="card">
+            
+            <div class="card-header">
+                <div class="parent">
+                    <h4 class="card-title">Ordered Device List Api</h4>
+                    <form method=post>
+                        {% csrf_token %}
+                        <button type="submit", width="100", name="_deleteall"> Delete all </button>
+                    </form>
+                </div>
+            </div>
+            
+            
+            <div class="box">
+                <form method=post class="form-control">
+                    {% csrf_token %}
+                    <table>
+                        <thead>
+                        <tr>
+                            
+                            <th>Sort Order</th>
+                            <th>Device name</th>
+                            {% if edit_flag %}
+                            <th>Select Device</th>
+                            {% endif %}
+                            <th>Edit/Save</th>
+                            {% if edit_flag %}
+                            <th>Cancel</th>
+                            {% else %}
+                            <th>Delete</th>
+                            {% endif %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for order in device_order_list %}
+                        <tr>
+                            
+                            <td>
+                                <label>{{order.sortno}}</label>
+                            </td>
+                            <td>
+                                <label>{{order}}</label>
+                            </td>
+                            {% if edit_flag and order == selected_order %}
+                            <td>
+                                <select name="edit_option">
+                                    
+                                    {% for item in device_order_list %}
+                                    <option value='{{item.sortno}}'>{{item.sortno}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            {% endif %}
+                            
+                            <td>
+                                {% if edit_flag and order == selected_order %}
+                                    <button type="submit", width="100", value="{{order.pk}}", name="_save"> Save </button>
+                                    {% elif edit_flag %}
+                                    {% else %}
+                                    <button type="submit", width="100", value="{{order.pk}}", name="_edit"> Edit </button>
+                                {% endif %}
+                            </td>
+                            
+                            {% if edit_flag and order == selected_order %}
+                            <td>
+                                <button type="submit", width="100", name="_cancel"> Cancel </button>
+                            </td>
+                            {% endif %}
+                            {% if edit_flag == False%}
+                            <td>
+                                <button type="submit", width="100", value="{{order.pk}}", name="_delete"> Delete </button>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    
+                    
+                </form>
+                
+            </div>
+    
+        </div>
+    
+    </div>
+</div>
+
+<div class="hpadding">
+    <div class="card-header">
+        <h4 class="card-title">Add To Api</h4>
+    </div>
+    <div class="card hpadding">
+        <p> </p>
+            
+            <form method=post>
+                <label>Select a device:</label>
+                <select name="new_option">
+                    {% for item in unselected_options %}
+                        <option value='{{item.pk}}'>{{item.category.categoryname}}</option>
+                    {% endfor %}
+                </select>
+                {% csrf_token %}
+                <button type="submit", width="100", name="_create"> Save </button>
+            </form>
+       
+    </div>
+</div>
+
+
+{% endblock common %}

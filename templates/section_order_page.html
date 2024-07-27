@@ -1,0 +1,162 @@
+
+{% extends 'common_content.html' %}
+{% load static %}
+{% block common %}
+
+
+
+<div>
+    <div class="box">
+        <div class="card">
+            
+            <div class="card-header">
+                <div class="parent">
+                    <h4 class="card-title">Ordered Section List Api</h4>
+                    <form method=post>
+                        {% csrf_token %}
+                        <button type="submit", width="100", name="_deleteall"> Delete all </button>
+                    </form>
+                </div>
+            </div>
+            
+            
+            <div class="box">
+                <form method=post class="form-control">
+                    {% csrf_token %}
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Sort Order</th>
+                            <th>Section Type</th>
+                            <th>Section name</th>
+                            {% if edit_flag %}
+                            <th>Change Position</th>
+                            {% endif %}
+                            <th>Edit/Save</th>
+                            {% if edit_flag %}
+                            <th>Cancel</th>
+                            {% else %}
+                            <th>Delete</th>
+                            {% endif %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for order in section_order_list %}
+                        <tr>
+                            <td>
+                                <label>{{order.sortno}}</label>
+                            </td>
+                            <td>
+                                {% if order.parent %}
+                                    <label>Parent section</label>
+                                {% else %}
+                                    <label>Section</label>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <label>{{order}}</label>
+                            </td>
+                            {% if edit_flag and order == selected_order %}
+                            <td>
+                                <select name="edit_option">
+                                    {% for item in section_order_list %}
+                                    <option value='{{item.sortno}}'>{{item.sortno}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            {% endif %}
+                            
+                            <td>
+                                {% if edit_flag and order == selected_order %}
+                                    <button type="submit", width="100", value="{{order.pk}}", name="_save"> Save </button>
+                                    {% elif edit_flag %}
+                                    {% else %}
+                                    <button type="submit", width="100", value="{{order.pk}}", name="_edit"> Edit </button>
+                                {% endif %}
+                            </td>
+                            
+                            {% if edit_flag and order == selected_order %}
+                            <td>
+                                <button type="submit", width="100", name="_cancel"> Cancel </button>
+                            </td>
+                            {% endif %}
+                            {% if edit_flag == False%}
+                            <td>
+                                <button type="submit", width="100", value="{{order.pk}}", name="_delete"> Delete </button>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    
+                    
+                </form>
+                
+            </div>
+    
+        </div>
+    
+    </div>
+</div>
+
+<div class="hpadding">
+    <div class="card-header">
+        <h4 class="card-title">Add To Api</h4>
+    </div>
+    <div class="card hpadding">
+        <P></P>
+
+            <form method=post>
+                <table>
+                    <th>Select section type: </th>
+                    <th>
+                        <div>
+                            <select name="_type" onChange="this.form.submit()">
+                                <option value='0' {% if type_id == '0' %}selected{% endif %}>Parent section</option>
+                                <option value='1' {% if type_id == '1' %}selected{% endif %}>Section</option>   
+                            </select>
+                        </div>
+                    </th>
+                    
+                    
+                    {% if type_id == '0' %}
+                    <th>
+                        <label>Select a parent: </label>
+                    </th>
+                    <th>
+                    <div>
+                        <select name="parent_option">
+                            {% for item in unselected_parents %}
+                                <option value='{{item.pk}}'>{{item}}</option>
+                            {% endfor %}
+                        </select>
+                     </div>
+                     </th>
+                    {% else %}
+                    <th>
+                        <label>Select a section: </label>
+                    </th>
+                    <th>
+                    <div>
+                        <select name="section_option">
+                        {% for item in unselected_sections %}
+                            <option value='{{item.pk}}'>{{item}}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
+                    </th>
+                    <th>
+                        {% csrf_token %}
+                        <button type="submit", width="100", name="_create"> Save </button>
+                    </th>
+                </table>
+                
+            </form>
+        
+    </div>
+</div>
+
+
+{% endblock common %}
