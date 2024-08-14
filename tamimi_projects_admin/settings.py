@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
-from firebase_admin import initialize_app
+
 
 
 
@@ -89,7 +89,7 @@ DATABASES = {
         'HOST': 'database-1.c702wq4umz9e.us-east-2.rds.amazonaws.com',
         'PORT': '5432',
         'USER': 'tamimi',
-        'PASSWORD': os.environ.get('PASSWORD')
+        'PASSWORD': 'rppmay24'
     }
 }
 
