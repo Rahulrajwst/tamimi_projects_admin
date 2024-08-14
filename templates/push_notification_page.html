@@ -1,0 +1,36 @@
+
+{% extends 'common_content.html' %}
+{% load static %}
+{% block common %}
+
+
+<body>
+    <div class="hpadding">
+        <div class="card hpadding">
+            <p>
+                <span>
+                    <form method=post enctype="multipart/form-data">
+                        
+                        <div style="margin-bottom: 20px; margin-top: 20px;">
+                            <label>Title: </label>
+                            <input type="text", name="message_title">
+                        </div>
+                        <div style="margin-bottom: 20px; margin-top: 20px;">
+                            <label>Description: </label>
+                            <input type="text", name="message_desc">
+                        </div>
+                    
+                        {% csrf_token %}
+                        <button type="submit", width="100", name="_create"> Add </button>
+                    </form>
+                </span>
+                
+            </p>
+        </div>
+    </div>
+</body>
+
+
+
+
+{% endblock common %}

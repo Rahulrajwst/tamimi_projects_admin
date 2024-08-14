@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
-import dj_database_url
+from firebase_admin import initialize_app
 
 
 
@@ -29,7 +29,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG')
-# DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -166,4 +165,5 @@ STORAGES = {
         }
     }
 
-
+FIREBASE_APP = initialize_app()
+FCM_API_KEY = os.environ.get('FCM_API_KEY')

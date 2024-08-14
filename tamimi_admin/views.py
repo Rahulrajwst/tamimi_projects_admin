@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from . models import CategoryModel,DeviceModel,SectionModel,ParentSectionModel,DeviceOrderModel,SectionOrderModel
+from . models import CategoryModel,DeviceModel,SectionModel,ParentSectionModel,DeviceOrderModel,SectionOrderModel,FCMTokenModel
 from gql import gql, Client
 from gql.transport.aiohttp import AIOHTTPTransport
 from .serializer import DeviceSerializer,SectionSerializer,ParentSectionSerializer,DeviceOrderSerializer,SectionOrderSerializer
@@ -9,8 +9,30 @@ from .forms import ParentForm,CreateUserForm,LoginForm
 from django.http import HttpResponse
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login
+from rest_framework import status
+from django.conf import settings
 
 from django.contrib.auth.decorators import login_required
+
+import requests
+import json
+from rest_framework.views import APIView
+
+class UpdateFCMTokenView(APIView):
+    def post(self, request, *args, **kwargs):
+        registration_id = request.data.get('device_token')
+
+        if not registration_id:
+            return Response({'error': 'Registration ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Update or create the device record
+        device, created = FCMTokenModel.objects.update_or_create(
+            
+            device_token=registration_id,
+        )
+
+        return Response({'message': 'Token updated' if not created else 'Token created'}, status=status.HTTP_200_OK)
+
 
 # apis
 @api_view(['GET'])
@@ -44,6 +66,7 @@ def getSectionOrderData(request):
     sectionlist = SectionOrderModel.objects.all().order_by('sortno')
     serializer = SectionOrderSerializer(sectionlist, many=True)
     return Response(serializer.data)
+
 
 
 # Views
@@ -502,3 +525,40 @@ def section_order_view(request):
     data={'section_order_list':section_order_list,'unselected_parents':unselected_parents,'unselected_sections':unselected_sections,'edit_flag':edit_flag, 'selected_order':selected_order, 'type_id':type_id}
     
     return render(request,'section_order_page.html',data)
+
+@login_required(login_url='login')
+def pushnotification_view(request):
+
+    if request.POST:
+        if '_create' in request.POST:
+            
+            message_title = request.POST.get('message_title') 
+            message_desc = request.POST.get('message_desc') 
+            print('push')    
+            devices = FCMTokenModel.objects.all()
+            registration_ids = [device.device_token for device in devices]            
+
+            fcm_api = settings.FCM_API_KEY
+            url = "https://fcm.googleapis.com/fcm/send"
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": 'key='+fcm_api
+                }
+            payload = {
+                "registration_ids": registration_ids,
+                "priority" : "high",
+                "notification": {
+                    "body" : message_desc,
+                    "title" : message_title,
+                }
+            }
+
+            result = requests.post(url,data=json.dumps(payload), headers=headers )
+            print (result.json())
+                
+            
+
+    
+    return render(request,'push_notification_page.html')
+
+

@@ -52,3 +52,9 @@ class SectionOrderModel(models.Model):
         else:
             return self.normalsection.category.categoryname
         
+
+
+class FCMTokenModel(models.Model):
+    device_token = models.CharField(max_length=255, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+

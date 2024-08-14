@@ -2,6 +2,7 @@ from django.urls import path
 from tamimi_admin import views
 from django.conf.urls.static import static
 from django.conf import settings
+from .views import UpdateFCMTokenView
 
 urlpatterns = [
     # home page
@@ -26,6 +27,9 @@ urlpatterns = [
     # Section list of parent
     path('childsections/<pk>', views.child_section_view, name='child_page'),
 
+    # Push notification
+    path('pushnotification/', views.pushnotification_view, name='push_notification_page'),
+
     # User sign in/ sign up
     path('register/', views.register, name='register'),
     path('login/', views.login, name='login'),
@@ -37,6 +41,8 @@ urlpatterns = [
     path('mparent/', views.getParentData),
     path('mdorder/', views.getDeviceOrderData),
     path('msorder/', views.getSectionOrderData),
+    path('update-fcm-token/', UpdateFCMTokenView.as_view(), name='update_fcm_token'),
+
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
