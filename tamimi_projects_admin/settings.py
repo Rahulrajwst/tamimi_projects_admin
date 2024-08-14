@@ -165,5 +165,4 @@ STORAGES = {
         }
     }
 
-FIREBASE_APP = initialize_app()
 FCM_API_KEY = os.environ.get('FCM_API_KEY')
